@@ -221,3 +221,6 @@ __marimo__/
 *.xlsx
 *.xls
 *.csv
+
+# Data foler
+data/
