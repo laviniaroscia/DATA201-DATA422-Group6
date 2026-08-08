@@ -38,3 +38,7 @@ concat_dataset = pd.concat(df, ignore_index=True)
 
 # Write the final csv file
 concat_dataset.to_csv("data/filtered_dataset.csv", index=False)
+
+all_data = []
+
+all_data = concat_dataset
