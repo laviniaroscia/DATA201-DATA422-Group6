@@ -69,7 +69,7 @@ def days_since_last_review():
     print("Shape of days since last review:")
     print(all_data["days_since_last_review"].describe())
 
-    # Plot the distribution for the new feature
+    # Remove missing values
     review_days = all_data["days_since_last_review"].dropna()
 
     # Remove the outliers
