@@ -447,7 +447,7 @@ def display_summary_statistics(df):
 def filter_timeframe(df):
     
     START_DATE = pd.Timestamp('2025-10-01')
-    END_DATE = pd.Timestamp('2026-06-30')
+    END_DATE = pd.Timestamp('2026-04-30')
 
     filtered_df = df[
         (df['TimeFrame'] >= START_DATE) &
