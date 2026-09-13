@@ -31,18 +31,19 @@
 
 **Number of rows:** 226080 without the header\
 **Number of columns:** 12\
-| `TimeFrame` | The quarter summarised, based on tenancy start date. |\
-| `Location Id` | Geographic area code. Per the source, area definitions use the SA2-2019 classification from Statistics NZ. |\
-| `Dwelling Type` | Type of rental property (ALL, House, Apartment, Boarding house, Flat). |\
-| `Number Of Beds` | Bedroom count category. |\
-| `Total Bonds` | Total number of bonds lodged for that group. |\
-| `Active Bonds` | Number of tenancies still ongoing. |\
-| `Closed Bonds` | Number of tenancies that have ended. |\
-| `Median Rent` | Middle weekly rent value for the group. |\
-| `Geometric Mean Rent` | Alternative measure to the median, used because rents cluster at round numbers, which can make plain medians plateau over time. |\
-| `Upper Quartile Rent` | Synthetic 75th-percentile rent, modelled assuming a log-normal rent distribution. |\
-| `Lower Quartile Rent` | Synthetic 25th-percentile rent, calculated the same way. |\
-| `Log Std Dev Weekly Rent` | Standard deviation of the log of weekly rent, indicating how spread out rents are within the group. |\
+**Column 1:** TimeFrame --> The quarter summarised, based on tenancy start date\
+**Column 2:** Location Id --> Geographic area code. Per the source, area definitions use the SA2-2019 classification from Statistics NZ\
+**Column 3:** Dwelling Type --> Type of rental property (ALL, House, Apartment, Boarding house, Flat)\
+**Column 4:** Number Of Beds --> Bedroom count category\
+**Column 5:** Total Bonds --> Total number of bonds lodged for that group\
+**Column 6:** Active Bonds --> Number of tenancies still ongoing\
+**Column 7:** Closed Bonds --> Number of tenancies that have ended\
+**Column 8:** Median Rent --> Middle weekly rent value for the group\
+**Column 9:** Geometric Mean Rent --> Alternative measure to the median, used because rents cluster at round numbers, which can make plain medians plateau over time\
+**Column 10:** Upper Quartile Rent --> Synthetic 75th-percentile rent, modelled assuming a log-normal rent distribution\
+**Column 11:** Lower Quartile Rent --> Synthetic 25th-percentile rent, modelled assuming a log-normal rent distribution\
+**Column 12:** Log Std Dev Weekly Rent --> Standard deviation of the log of weekly rent, indicating how spread out rents are within the group\
+
 ## Bond Dataset Cleaning
 
 - **Timeframe:** [START_DATE]–[END_DATE], matched to Deliverable 3 dataset. Kept [X]/[Y] rows.
