@@ -40,3 +40,11 @@
 | `Upper Quartile Rent` | Synthetic 75th-percentile rent, modelled assuming a log-normal rent distribution. |\
 | `Lower Quartile Rent` | Synthetic 25th-percentile rent, calculated the same way. |\
 | `Log Std Dev Weekly Rent` | Standard deviation of the log of weekly rent, indicating how spread out rents are within the group. |\
+## Bond Dataset Cleaning
+
+- **Timeframe:** [START_DATE]–[END_DATE], matched to Deliverable 3 dataset. Kept [X]/[Y] rows.
+- **Dropped:** `Log Std Dev Weekly Rent` (redundant with other rent columns).
+- **Imputed:** `Number Of Beds`, using Location Id + Dwelling Type + Median Rent matches ([X] imputed, [W] left missing — no unique match).
+- **Duplicates:** [N] found, [kept/dropped].
+- **Outliers:** Flagged via IQR, not removed (may be genuine).
+- **Kept:** `Location Id`, `TimeFrame` (for next week's merge).
