@@ -1,14 +1,38 @@
 # Rental Bond Data Cleaning
 
+## Before Data Cleaning (All Data): Rental Bond Dataset
+The original dataset contained 226,080 records and 12 columns.
+Dataset shape: (226080, 12)
+
+## Data types
+TimeFrame                      str
+Location Id                float64
+Dwelling Type                  str
+Number Of Beds                 str
+Total Bonds                  int64
+Active Bonds                 int64
+Closed Bonds                 int64
+Median Rent                float64
+Geometric Mean Rent        float64
+Upper Quartile Rent        float64
+Lower Quartile Rent        float64
+
+## Update column data types
+Convert TimeFrame from string to datetime
+
+## Apply Timeframe filter
+Kept 27,212 of 226,080 rows (2025-10-01 to 2026-04-30)
+
+## Drop Log Std Dev Weekly Rent
+Dropped Log Std Dev Weekly Rent as it is difficult to interpret from a business
+perspective and provides limited information compared with other rent metrics.
+Dataset shape after dropping the column: (27212, 11)
+
 ## Duplicate Records
 Duplicate records were checked across all columns in the dataset.
 Result:
 - Duplicate rows found: 0
 No duplicate records were identified; therefore, no duplicate rows were removed.
-
-## Drop Log Std Dev Weekly Rent
-Dropped Log Std Dev Weekly Rent as it is difficult to interpret from a business
-perspective and provides limited information compared with other rent metrics.
 
 ## Missing Location Id
 94 records out of a total of 27,212 with missing Location Id were retained
@@ -45,6 +69,11 @@ Location Id for imputation.
 ### Sanity Check
 Displayed records where Number Of Beds was updated during imputation by comparing the original values stored in Org_Number_Of_Beds with the imputed values in Number Of Beds.
 
+### Check for invalid values
+No negative values were found in the bond or rent columns.
+Total Bonds < Active Bonds or Closed Bonds: 26,687 rows
+Total Bonds ≥ Active Bonds and Closed Bonds: 22,819 rows
+
 ## Outlier Detection
 Potential outliers were identified using the IQR (Interquartile Range) method across the numerical variables.
 
@@ -55,3 +84,5 @@ As the dataset contains rental bond and rent information, extreme values may rep
 The temporary column Org_Number_Of_Beds, created to preserve the original values
 of Number Of Beds for validation and sanity checking during imputation, was
 dropped after the imputation process was verified.
+
+After completing the data cleaning process, the cleaned dataset was saved.

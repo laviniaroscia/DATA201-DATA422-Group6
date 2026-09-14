@@ -11,35 +11,39 @@ def clean_bond_dataset():
     # Read the csv file
     bond_df = pd.read_csv(file_path)
 
-    # Uncomment the lines below to view the dataset overview before timeframe filtering
+    # Display dataset overview and data types before applying data cleaning steps
     print("\nBefore Data Cleaning (All Data): Rental Bond Dataset")
-    display_dataset_overview(bond_df)
+    print("Dataset shape:", bond_df.shape)
+    print("Data types:")
+    print(bond_df.dtypes)
 
+    print("\nUpdate column data types...")
     # Update column data types
-    bond_df['TimeFrame'] = pd.to_datetime(bond_df['TimeFrame'])
-
-    #display_dataset_overview(bond_df)    
+    bond_df['TimeFrame'] = pd.to_datetime(bond_df['TimeFrame'])      
 
     # Apply timeframe filtering.
     filtered_data = filter_timeframe(bond_df)
     # Use the full dataset if no filtered records are returned.   
     if (len(filtered_data) == 0):  
-        filtered_data = bond_df
-
-    #Duplicate Records
-    print("Duplicate rows:", filtered_data.duplicated().sum())
+        filtered_data = bond_df    
 
     print("\nBefore Data Cleaning (After Timeframe Filtering): Rental Bond Dataset")
     display_dataset_overview(filtered_data)
     display_summary_statistics(filtered_data)
 
-    print("\nAfter Data Cleaning (After Timeframe Filtering)")
+    print("\n======================================================================================")
+    print("Start Data Cleaning (After Timeframe Filtering)")   
+
+    print("\nDrop unnecessary columns...")
     #Dropped Log Std Dev Weekly Rent as it is difficult to interpret from a business perspective
     #and provides limited information compared with other rent metrics. 
     filtered_data = filtered_data.drop(columns=['Log Std Dev Weekly Rent'])
 
     display_dataset_overview(filtered_data)
     display_summary_statistics(filtered_data)
+
+    # Duplicate Records
+    print("\nDuplicate rows:", filtered_data.duplicated().sum())
 
     # 94 records out of a total of 27,212 with missing Location Id were retained because
     # they represent only 0.35% of the dataset. These records also have missing values in
@@ -163,7 +167,7 @@ def clean_bond_dataset():
     else:
         print(updated_records.to_string(index=False))
 
-    print("\nOutliers Detection:")
+    # Check for invalid values and Outliers Detection
     numeric_columns = [
         'Total Bonds',
         'Active Bonds',
@@ -174,6 +178,48 @@ def clean_bond_dataset():
         'Lower Quartile Rent'
     ]
 
+    print("\nCheck for invalid values:")
+    for col in numeric_columns:
+        if (col == 'Closed Bonds'):
+            print(f"{col}: {(filtered_data[col] < 0).sum()}")
+        else:
+            print(f"{col}: {(filtered_data[col] <= 0).sum()}")
+
+    invalid_count = len(
+        filtered_data[
+            (filtered_data["Total Bonds"] < filtered_data["Active Bonds"]) |
+            (filtered_data["Total Bonds"] < filtered_data["Closed Bonds"])
+        ]
+    )
+
+    print(
+        f"Rows where Total Bonds is less than Active Bonds or Closed Bonds: {invalid_count}"
+    )
+
+    print(filtered_data.loc[
+        (filtered_data["Total Bonds"] <  filtered_data["Active Bonds"]) |
+        (filtered_data["Total Bonds"] <  filtered_data["Closed Bonds"]),
+        ["Location Id", "Total Bonds", "Active Bonds", "Closed Bonds"]
+    ].head())
+
+    valid_count = len(
+        filtered_data[
+            (filtered_data["Total Bonds"] >= filtered_data["Active Bonds"]) |
+            (filtered_data["Total Bonds"] >= filtered_data["Closed Bonds"])
+        ]
+    )
+
+    print(
+        f"Rows where Total Bonds is greater than or equal to both Active Bonds and Closed Bonds: {valid_count}"
+    )    
+
+    print(filtered_data.loc[
+        (filtered_data["Total Bonds"] >= filtered_data["Active Bonds"]) &
+        (filtered_data["Total Bonds"] >= filtered_data["Closed Bonds"]),
+        ["Location Id", "Total Bonds", "Active Bonds", "Closed Bonds"]
+    ].head())    
+
+    print("\nOutliers Detection:")
     for column in numeric_columns:
 
         Q1 = filtered_data[column].quantile(0.25)
