@@ -5,16 +5,16 @@ The original dataset contained 226,080 records and 12 columns.
 Dataset shape: (226080, 12)
 
 ## Data types
-TimeFrame                      str
-Location Id                float64
-Dwelling Type                  str
-Number Of Beds                 str
-Total Bonds                  int64
-Active Bonds                 int64
-Closed Bonds                 int64
-Median Rent                float64
-Geometric Mean Rent        float64
-Upper Quartile Rent        float64
+TimeFrame                      str\
+Location Id                float64\
+Dwelling Type                  str\
+Number Of Beds                 str\
+Total Bonds                  int64\
+Active Bonds                 int64\
+Closed Bonds                 int64\
+Median Rent                float64\
+Geometric Mean Rent        float64\
+Upper Quartile Rent        float64\
 Lower Quartile Rent        float64
 
 ## Update column data types
