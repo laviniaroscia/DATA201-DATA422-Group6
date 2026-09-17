@@ -35,7 +35,7 @@
 **Column 2:** Location Id --> Geographic area code. Per the source, area definitions use the SA2-2019 classification from Statistics NZ\
 **Column 3:** Dwelling Type --> Type of rental property (ALL, House, Apartment, Boarding house, Flat)\
 **Column 4:** Number Of Beds --> Bedroom count category\
-**Column 5:** Total Bonds --> Total number of bonds lodged for that group\
+**Column 5:** Total Bonds --> Number of tenancies which has been opened within the timeframe\
 **Column 6:** Active Bonds --> Number of tenancies still ongoing\
 **Column 7:** Closed Bonds --> Number of tenancies that have ended\
 **Column 8:** Median Rent --> Middle weekly rent value for the group\
