@@ -233,7 +233,12 @@ def filter_timeframe(df):
     
     filtered_df = []  
     """ Rental bond data cleaning for Week 8 """
-
+# Timeframe matched to Deliverable 3 (Christchurch listings) dataset.
+# Dropped: overlaps with other rent columns, hard to interpret.
+# Impute beds only when Location Id + Dwelling Type + Median Rent
+# gives exactly one match (avoids guessing on ambiguous cases).
+# [X] of [Y] missing beds imputed; rest left missing (no unique match).
+# Outliers flagged (IQR method), not removed — could be real, not errors.
 import pandas as pd
 import numpy as np
 
