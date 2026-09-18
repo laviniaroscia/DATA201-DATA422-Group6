@@ -1,7 +1,7 @@
 # Rental Bond Data Cleaning
 
 ## Before Data Cleaning (All Data): Rental Bond Dataset
-The original dataset contained 226,080 records and 12 columns.
+The original dataset contained 226,080 records and 12 columns.\
 Dataset shape: (226080, 12)
 
 ## Data types
@@ -23,15 +23,15 @@ Convert TimeFrame from string to datetime
 ## Apply Timeframe filter
 Kept 27,212 of 226,080 rows (2025-10-01 to 2026-04-30)
 
-## Drop Log Std Dev Weekly Rent
-Dropped Log Std Dev Weekly Rent as it is difficult to interpret from a business
-perspective and provides limited information compared with other rent metrics.
-Dataset shape after dropping the column: (27212, 11)
+## Retaining All Relevant Columns
+All relevant columns were retained, and no columns were dropped.\
+Log Std Dev Weekly Rent was retained as it provides insight into rent variability within a group, complementing other rent metrics.\
+Dataset shape: (27212, 12)
 
 ## Duplicate Records
-Duplicate records were checked across all columns in the dataset.
-Result:
-- Duplicate rows found: 0
+Duplicate records were checked across all columns in the dataset.\
+Result:\
+- Duplicate rows found: 0\
 No duplicate records were identified; therefore, no duplicate rows were removed.
 
 ## Missing Location Id
@@ -69,10 +69,9 @@ Location Id for imputation.
 ### Sanity Check
 Displayed records where Number Of Beds was updated during imputation by comparing the original values stored in Org_Number_Of_Beds with the imputed values in Number Of Beds.
 
-### Check for invalid values
-No negative values were found in the bond or rent columns.
-Total Bonds < Active Bonds or Closed Bonds: 26,687 rows
-Total Bonds ≥ Active Bonds and Closed Bonds: 22,819 rows
+## Check for invalid values
+No negative values were found in the bond or rent columns.\
+A review of the bond variables showed that Total Bonds, Active Bonds, and Closed Bonds represent different aspects of bond activity within a quarter. Total Bonds refers to bonds lodged during the quarter, while Active Bonds and Closed Bonds represent bond status counts during the quarter. Therefore, direct comparisons between these variables were not used as a data quality rule.
 
 ## Outlier Detection
 Potential outliers were identified using the IQR (Interquartile Range) method across the numerical variables.
