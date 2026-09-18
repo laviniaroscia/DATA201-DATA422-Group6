@@ -223,4 +223,4 @@ __marimo__/
 *.csv
 
 # Data foler
-data/
+data/.DS_Store
