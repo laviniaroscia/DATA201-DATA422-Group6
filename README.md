@@ -131,3 +131,70 @@ of Number Of Beds for validation and sanity checking during imputation, was
 dropped after the imputation process was verified.
 
 After completing the data cleaning process, the cleaned dataset was saved.
+
+## Median Airbnb Price in Christchurch Central
+
+Christchurch Central was identified using **Location ID 326600**.
+
+The Airbnb dataset was filtered using the corresponding `area_code`, and the
+median listing price was calculated from the `price` column.
+
+**Median Airbnb price in Christchurch Central: $239.00 per night**
+
+The median was used rather than the mean because Airbnb prices can contain
+extreme values that may distort the average.
+
+## Short-term vs Long-term Rental Price Gap
+
+To compare short-term and long-term rental prices, Airbnb listings with a
+`minimum_nights` value of 7 or less were treated as short-term rentals.
+
+The weekly median rent from the rental bond dataset was converted to a nightly
+price:
+
+`long-term nightly price = Median Rent / 7`
+
+The rental price gap was then calculated as:
+
+`price gap = Airbnb nightly price - long-term nightly price`
+
+To reduce the influence of extreme Airbnb price outliers, the median price gap
+was calculated for each area. Only areas with at least 10 unique listings were
+included.
+
+The largest median gap was observed in **Sumner**, with a median short-term
+premium of approximately **$196 per night** across **78 listings**.
+
+The next largest gaps were observed in:
+- **Malvern:** ~$170 per night
+- **Christchurch Central-West:** ~$158 per night
+- **Addington North:** ~$157 per night
+- **Christchurch Central:** ~$153 per night
+
+![Median rental price gap by area](images/rental_price_gap_by_area.png)
+
+## Number of Airbnb vs Long-Term Rental Properties for each location
+
+To compare the number of Airbnb and long-term rental properties across Christchurch, the Airbnb and Rental Bond datasets were aligned by geographic area and quarter.
+
+Airbnb monthly observations were converted to quarter start dates so they could be matched with the quarterly `TimeFrame` values in the Rental Bond dataset.
+
+For Airbnb listings, the number of unique `id` values was counted for each area and quarter.
+
+For long-term rentals, the Rental Bond dataset was filtered to:
+
+- `Dwelling Type = ALL`
+- `Number Of Beds = ALL`
+
+The `Active Bonds` value was then used as the number of active long-term rental tenancies for each area.
+
+The geographic match was performed using:
+
+- Airbnb `area_code`
+- Rental Bond `Location Id`
+
+The comparison was carried out separately for each quarter to avoid mixing observations from different time periods.
+
+The latest available quarter was **April–June 2026**.
+
+![Airbnb vs Long-Term Rental Properties](images/airbnb_vs_long_term_properties.png)
