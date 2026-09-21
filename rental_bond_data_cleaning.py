@@ -19,7 +19,7 @@ def clean_bond_dataset():
 
     print("\nUpdate column data types...")
     # Update column data types
-    bond_df['TimeFrame'] = pd.to_datetime(bond_df['TimeFrame'])      
+    bond_df['TimeFrame'] = pd.to_datetime(bond_df['TimeFrame'])           
 
     # Apply timeframe filtering.
     filtered_data = filter_timeframe(bond_df)
@@ -28,16 +28,13 @@ def clean_bond_dataset():
         filtered_data = bond_df    
 
     print("\nBefore Data Cleaning (After Timeframe Filtering): Rental Bond Dataset")
-    display_dataset_overview(filtered_data)
-    display_summary_statistics(filtered_data)
+    display_dataset_overview(filtered_data)    
 
     print("\n======================================================================================")
     print("Start Data Cleaning (After Timeframe Filtering)")   
 
-    print("\nDrop unnecessary columns...")
-    #Dropped Log Std Dev Weekly Rent as it is difficult to interpret from a business perspective
-    #and provides limited information compared with other rent metrics. 
-    filtered_data = filtered_data.drop(columns=['Log Std Dev Weekly Rent'])
+    print("\nRetaining all relevant columns; no columns are dropped.")
+    # Retained Log Std Dev Weekly Rent as it provides insight into rent variability within a group.    
 
     display_dataset_overview(filtered_data)
     display_summary_statistics(filtered_data)
@@ -175,49 +172,17 @@ def clean_bond_dataset():
         'Median Rent',
         'Geometric Mean Rent',
         'Upper Quartile Rent',
-        'Lower Quartile Rent'
+        'Lower Quartile Rent',
+        'Log Std Dev Weekly Rent'
     ]
 
     print("\nCheck for invalid values:")
     for col in numeric_columns:
-        if (col == 'Closed Bonds'):
+        if col in ['Closed Bonds', 'Log Std Dev Weekly Rent']:
             print(f"{col}: {(filtered_data[col] < 0).sum()}")
         else:
             print(f"{col}: {(filtered_data[col] <= 0).sum()}")
-
-    invalid_count = len(
-        filtered_data[
-            (filtered_data["Total Bonds"] < filtered_data["Active Bonds"]) |
-            (filtered_data["Total Bonds"] < filtered_data["Closed Bonds"])
-        ]
-    )
-
-    print(
-        f"Rows where Total Bonds is less than Active Bonds or Closed Bonds: {invalid_count}"
-    )
-
-    print(filtered_data.loc[
-        (filtered_data["Total Bonds"] <  filtered_data["Active Bonds"]) |
-        (filtered_data["Total Bonds"] <  filtered_data["Closed Bonds"]),
-        ["Location Id", "Total Bonds", "Active Bonds", "Closed Bonds"]
-    ].head())
-
-    valid_count = len(
-        filtered_data[
-            (filtered_data["Total Bonds"] >= filtered_data["Active Bonds"]) |
-            (filtered_data["Total Bonds"] >= filtered_data["Closed Bonds"])
-        ]
-    )
-
-    print(
-        f"Rows where Total Bonds is greater than or equal to both Active Bonds and Closed Bonds: {valid_count}"
-    )    
-
-    print(filtered_data.loc[
-        (filtered_data["Total Bonds"] >= filtered_data["Active Bonds"]) &
-        (filtered_data["Total Bonds"] >= filtered_data["Closed Bonds"]),
-        ["Location Id", "Total Bonds", "Active Bonds", "Closed Bonds"]
-    ].head())    
+      
 
     print("\nOutliers Detection:")
     for column in numeric_columns:
