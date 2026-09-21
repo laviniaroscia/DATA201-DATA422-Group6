@@ -12,7 +12,6 @@ import pandas as pd
 INPUT_CSV = "data/christchurch_listings_with_area_codes.csv"
 CHRISTCHURCH_CENTRAL_ID = 326600
 
-
 def main():
     df = pd.read_csv(INPUT_CSV)
     print(f"Loaded {len(df)} rows from {INPUT_CSV}")
