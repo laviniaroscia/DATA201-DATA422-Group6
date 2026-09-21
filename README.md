@@ -229,6 +229,8 @@ represent genuine characteristics of particular areas rather than data errors.
 After the cleaning and validation steps were completed, the processed Rental
 Bond dataset was saved for use in the subsequent analyses.
 
+---
+
 ## Median Airbnb Price in Christchurch Central
 
 Christchurch Central was identified using **Location ID 326600**.
@@ -240,6 +242,8 @@ median listing price was calculated from the `price` column.
 
 The median was used rather than the mean because Airbnb prices can contain
 extreme values that may distort the average.
+
+---
 
 ## Short-term vs Long-term Rental Price Gap
 
@@ -269,6 +273,8 @@ The next largest gaps were observed in:
 - **Christchurch Central:** ~$153 per night
 
 ![Median rental price gap by area](images/rental_price_gap_by_area.png)
+
+---
 
 ## Number of Airbnb vs Long-Term Rental Properties for each location
 
