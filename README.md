@@ -1,136 +1,233 @@
 # DATA201-DATA422 Data Wrangling Project - Group 6
 
-## Dataset 1
+This project combines Airbnb listing data with New Zealand Rental Bond data
+to compare short-term and long-term rental patterns across Christchurch.
 
-**Source:** https://insideairbnb.com/get-the-data/ New Zealand, 19th of June 2026
+The analysis focuses on rental prices, geographic differences, and the number
+of properties available in different Statistical Area 2 (SA2) locations.
 
-**Number of rows:** 50932 without the header\
-**Number of columns:** 18\
-**Column 1:** id --> id of the listing\
-**Column 2:** name --> AirBnB name on the listing\
-**Column 3:** host_id\
-**Column 4:** host_name\
-**Column 5:** neighbourhood_group --> city district\
-**Column 6:** neighbourhood --> actual neighbourhood\
-**Column 7:** latitude\
-**Column 8:** longitude\
-**Column 9:** room_type --> entire home or just private room\
-**Column 10:** price\
-**Column 11:** minimum_nights\
-**Column 12:** number_of_reviews\
-**Column 13:** last_review\
-**Column 14:** reviews_per_month\
-**Column 15:** calculated_host_listings_count --> how many listings the host has\
-**Column 16:** availability_365 --> when is it available\
-**Column 17:** number_of_reviews_ltm --> number of reviews in the last 12 month\
-**Column 18:** license --> permit/registration number
+---
 
-## Dataset 2
+## Dataset 1 — Airbnb Listings
 
-**Source:** [Tenancy Services – Rental Bond Data](https://www.tenancy.govt.nz/about-tenancy-services/data-and-statistics/rental-bond-data/)
+**Source:** [Inside Airbnb](https://insideairbnb.com/get-the-data/)  
+**Location:** Christchurch, New Zealand  
+**Dataset date:** 19 June 2026  
+**Original size:** 50,932 rows × 18 columns
 
-**Number of rows:** 226080 without the header\
-**Number of columns:** 12\
-**Column 1:** TimeFrame --> The quarter summarised, based on tenancy start date\
-**Column 2:** Location Id --> Geographic area code. Per the source, area definitions use the SA2-2019 classification from Statistics NZ\
-**Column 3:** Dwelling Type --> Type of rental property (ALL, House, Apartment, Boarding house, Flat)\
-**Column 4:** Number Of Beds --> Bedroom count category\
-**Column 5:** Total Bonds --> Number of tenancies which has been opened within the timeframe\
-**Column 6:** Active Bonds --> Number of tenancies still ongoing\
-**Column 7:** Closed Bonds --> Number of tenancies that have ended\
-**Column 8:** Median Rent --> Middle weekly rent value for the group\
-**Column 9:** Geometric Mean Rent --> Alternative measure to the median, used because rents cluster at round numbers, which can make plain medians plateau over time\
-**Column 10:** Upper Quartile Rent --> Synthetic 75th-percentile rent, modelled assuming a log-normal rent distribution\
-**Column 11:** Lower Quartile Rent --> Synthetic 25th-percentile rent, modelled assuming a log-normal rent distribution\
-**Column 12:** Log Std Dev Weekly Rent --> Standard deviation of the log of weekly rent, indicating how spread out rents are within the group\
+| Column | Description |
+|---|---|
+| `id` | Unique Airbnb listing identifier |
+| `name` | Listing name |
+| `host_id` | Unique host identifier |
+| `host_name` | Host name |
+| `neighbourhood_group` | Higher-level geographic grouping |
+| `neighbourhood` | Neighbourhood of the listing |
+| `latitude` | Listing latitude |
+| `longitude` | Listing longitude |
+| `room_type` | Type of accommodation, such as entire home or private room |
+| `price` | Airbnb nightly price |
+| `minimum_nights` | Minimum number of nights required for a booking |
+| `number_of_reviews` | Total number of reviews |
+| `last_review` | Date of the most recent review |
+| `reviews_per_month` | Average number of reviews per month |
+| `calculated_host_listings_count` | Number of listings associated with the host |
+| `availability_365` | Number of days available during the next 365 days |
+| `number_of_reviews_ltm` | Number of reviews in the last 12 months |
+| `license` | Permit or registration information |
+
+---
+
+## Airbnb Data Cleaning
+
+The Airbnb dataset had already been filtered to Christchurch before the main
+analysis. The cleaning process focused on retaining variables relevant to
+rental price, availability, property type, and geographic analysis.
+
+### Removed columns
+
+The following columns were removed because they were not required for the
+planned analysis:
+
+- `name`
+- `host_name`
+- `neighbourhood_group`
+- `last_review`
+- `reviews_per_month`
+- `number_of_reviews_ltm`
+- `license`
+
+`neighbourhood_group` was removed because the dataset had already been filtered
+to Christchurch, so it did not provide useful additional geographic variation.
+
+Latitude and longitude were retained for geographic matching.
+
+### Missing values
+
+Most retained variables contained no missing values.
+
+The main exceptions were:
+
+- `price`: 10,667 missing values
+- `minimum_nights`: 37 missing values
+
+Rows with missing prices were retained because a listing may still be useful
+when analysing the number and geographic distribution of Airbnb properties.
+Missing prices are excluded only when a price-specific analysis is performed.
+
+The small number of missing `minimum_nights` values was also retained because
+this variable was not required for every analysis.
+
+### Duplicate checks
+
+No completely duplicated rows were found.
+
+Although some Airbnb `id` values appeared multiple times, this was expected
+because the dataset contains observations from multiple dates.
+
+The combination of `id` and `date` was checked and no duplicate
+`id`–`date` records were found.
+
+### Invalid values and outliers
+
+The following checks were performed:
+
+- `availability_365` was confirmed to fall between 0 and 365
+- `minimum_nights` contained no values below 1
+- `price` contained no zero or negative values
+- latitude and longitude values were retained for geographic analysis
+
+Airbnb prices contained several extreme values. These observations were
+retained because there was no objective threshold for identifying them as
+incorrect records.
+
+For later price comparisons, median values were therefore preferred over means
+where appropriate because they are less sensitive to extreme prices.
+
+---
+
+## Dataset 2 — Rental Bond Data
+
+**Source:** [Tenancy Services — Rental Bond Data](https://www.tenancy.govt.nz/about-tenancy-services/data-and-statistics/rental-bond-data/)  
+**Original size:** 226,080 rows × 12 columns
+
+| Column | Description |
+|---|---|
+| `TimeFrame` | Quarter summarised, based on tenancy start date |
+| `Location Id` | SA2 geographic area identifier |
+| `Dwelling Type` | Rental property category such as house, apartment, flat, or boarding house |
+| `Number Of Beds` | Bedroom-count category |
+| `Total Bonds` | Number of tenancies opened during the timeframe |
+| `Active Bonds` | Number of tenancies still active |
+| `Closed Bonds` | Number of tenancies that have ended |
+| `Median Rent` | Median weekly rent for the group |
+| `Geometric Mean Rent` | Alternative rental-price measure using the geometric mean |
+| `Upper Quartile Rent` | Estimated 75th-percentile weekly rent |
+| `Lower Quartile Rent` | Estimated 25th-percentile weekly rent |
+| `Log Std Dev Weekly Rent` | Measure of the spread of weekly rental prices |
+
+---
 
 ## Rental Bond Data Cleaning
 
-### Before Data Cleaning (All Data): Rental Bond Dataset
-The original dataset contained 226,080 records and 12 columns.\
-Dataset shape: (226080, 12)
+### Initial dataset
+
+The original Rental Bond dataset contained:
+
+- **226,080 rows**
+- **12 columns**
 
 ### Data types
-TimeFrame                      str\
-Location Id                float64\
-Dwelling Type                  str\
-Number Of Beds                 str\
-Total Bonds                  int64\
-Active Bonds                 int64\
-Closed Bonds                 int64\
-Median Rent                float64\
-Geometric Mean Rent        float64\
-Upper Quartile Rent        float64\
-Lower Quartile Rent        float64
 
-### Update column data types
-Convert TimeFrame from string to datetime
+`TimeFrame` was converted from a string to a datetime value so that the dataset
+could be filtered and aligned with the Airbnb observation periods.
 
-### Apply Timeframe filter
-Kept 27,212 of 226,080 rows (2025-10-01 to 2026-04-30)
+### Timeframe filtering
 
-### Retaining All Relevant Columns
-All relevant columns were retained, and no columns were dropped.\
-Log Std Dev Weekly Rent was retained as it provides insight into rent variability within a group, complementing other rent metrics.\
-Dataset shape: (27212, 12)
+Only the period relevant to the Airbnb analysis was retained:
 
-### Duplicate Records
-Duplicate records were checked across all columns in the dataset.\
-Result:\
-- Duplicate rows found: 0\
-No duplicate records were identified; therefore, no duplicate rows were removed.
+**1 October 2025 to 30 April 2026**
 
-### Missing Location Id
-94 records out of a total of 27,212 with missing Location Id were retained
-because they represent only 0.35% of the dataset. These records also have missing
-values in Median Rent, Geometric Mean Rent, Upper Quartile Rent, and Lower
-Quartile Rent. However, they still contain valid information in Dwelling Type,
-Number Of Beds, Total Bonds, Active Bonds, and Closed Bonds.
+This reduced the dataset from:
 
-### Number Of Beds Imputation
+**226,080 rows → 27,212 rows**
 
-#### Create Reference Records
-A reference table was created using records with valid Location Id and Number Of Beds. This table is used to identify matching Number Of Beds values based on Location Id, Dwelling Type, and Median Rent for imputation purposes.
+All 12 columns were retained because they contained potentially useful
+information for rental-price and property-count analyses.
 
-#### Validate Reference Combinations
-Calculate the number of unique Number Of Beds values for each Location Id, Dwelling Type, and Median Rent combination.
-- Unique_Bed_Count = 1 indicates the combination can be used as a reference for imputation.
-- Unique_Bed_Count > 1 indicates the combination cannot be used as a reference for imputation.
+### Duplicate records
 
-#### Identify Missing Combinations
-Identify unique combinations with missing Number Of Beds that have a valid
-Location Id for imputation.
+Duplicate rows were checked across all columns.
 
-#### Perform Imputation
-- Keep a copy of the original Number Of Beds values before imputation.
-- Loop through records with missing Number Of Beds and a valid Location Id.
-- Find matching reference records using Location Id, Dwelling Type, and Median Rent.
-- Impute Number Of Beds only when exactly one matching reference record is found.
+**Duplicate rows found: 0**
 
-#### Results
-- Missing Number Of Beds before imputation: 890
-- Missing Number Of Beds after imputation: 722
-- Number Of Beds values imputed: 168
+No records were removed as duplicates.
 
-#### Sanity Check
-Displayed records where Number Of Beds was updated during imputation by comparing the original values stored in Org_Number_Of_Beds with the imputed values in Number Of Beds.
+### Missing `Location Id`
 
-### Check for invalid values
-No negative values were found in the bond or rent columns.\
-A review of the bond variables showed that Total Bonds, Active Bonds, and Closed Bonds represent different aspects of bond activity within a quarter. Total Bonds refers to bonds lodged during the quarter, while Active Bonds and Closed Bonds represent bond status counts during the quarter. Therefore, direct comparisons between these variables were not used as a data quality rule.
+There were **94 rows** with missing `Location Id`, representing approximately
+**0.35%** of the filtered dataset.
 
-### Outlier Detection
-Potential outliers were identified using the IQR (Interquartile Range) method across the numerical variables.
+These rows were retained because they still contained useful information for:
 
-Outlier percentages ranged from 4.14% to 7.89% of the dataset.
-As the dataset contains rental bond and rent information, extreme values may represent genuine observations rather than data quality issues. Therefore, the identified outliers were retained in the dataset.
+- `Dwelling Type`
+- `Number Of Beds`
+- `Total Bonds`
+- `Active Bonds`
+- `Closed Bonds`
 
-#### Clean Up
-The temporary column Org_Number_Of_Beds, created to preserve the original values
-of Number Of Beds for validation and sanity checking during imputation, was
-dropped after the imputation process was verified.
+The same records also contained missing rent statistics, including `Median Rent`,
+`Geometric Mean Rent`, `Upper Quartile Rent`, and `Lower Quartile Rent`.
 
-After completing the data cleaning process, the cleaned dataset was saved.
+### `Number Of Beds` imputation
+
+The dataset initially contained **890 missing values** in `Number Of Beds`.
+
+A reference table was created from records containing valid values for:
+
+- `Location Id`
+- `Dwelling Type`
+- `Median Rent`
+- `Number Of Beds`
+
+For each combination of `Location Id`, `Dwelling Type`, and `Median Rent`, the
+number of unique bedroom categories was checked.
+
+A missing `Number Of Beds` value was imputed only when the matching combination
+mapped to exactly one bedroom category.
+
+#### Imputation results
+
+- Missing before imputation: **890**
+- Values successfully imputed: **168**
+- Missing after imputation: **722**
+
+The original values were temporarily preserved in `Org_Number_Of_Beds` so that
+the imputed records could be validated. This temporary column was removed after
+the validation was completed.
+
+### Invalid values
+
+No negative values were found in the bond-count or rental-price variables.
+
+`Total Bonds`, `Active Bonds`, and `Closed Bonds` were not directly compared as
+a consistency rule because they represent different aspects of bond activity.
+
+### Outlier detection
+
+Potential outliers in the numerical variables were identified using the
+Interquartile Range (IQR) method.
+
+Depending on the variable, approximately **4.14% to 7.89%** of observations were
+identified as potential outliers.
+
+These observations were retained because high bond counts or rental prices may
+represent genuine characteristics of particular areas rather than data errors.
+
+### Cleaned output
+
+After the cleaning and validation steps were completed, the processed Rental
+Bond dataset was saved for use in the subsequent analyses.
 
 ## Median Airbnb Price in Christchurch Central
 
