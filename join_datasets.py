@@ -11,6 +11,9 @@ def join_listings_and_bonds():
 
     bonds["Location Id"] = bonds["Location Id"].fillna(0)
     bonds["Location Id"] = bonds["Location Id"].astype("int64")
+
+    listings["area_code"] = listings["area_code"].fillna(0)
+    listings["area_code"] = listings["area_code"].astype("int64")
     
     listings["date"] = pd.to_datetime(
         listings["date"],
