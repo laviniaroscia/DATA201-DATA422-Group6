@@ -37,7 +37,7 @@ for file_path, date in FILES_DATES.items():
 concat_dataset = pd.concat(df, ignore_index=True)
 
 # Write the final csv file
-concat_dataset.to_csv("data/filtered_dataset.csv", index=False)
+concat_dataset.to_csv("out/filtered_dataset.csv", index=False)
 
 all_data = []
 

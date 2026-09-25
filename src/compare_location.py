@@ -131,11 +131,11 @@ def plot_property_counts(comparison):
 def main():
 
     airbnb = pd.read_csv(
-        "data/christchurch_listings_with_area_codes.csv"
+        "out/christchurch_listings_with_area_codes.csv"
     )
 
     bonds = pd.read_csv(
-        "data/bond_data_clean.csv"
+        "out/bond_data_clean.csv"
     )
 
     comparison = compare_property_counts(

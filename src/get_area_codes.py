@@ -8,7 +8,7 @@ from tqdm import tqdm
 # 1. Load the cleaned Airbnb CSV
 # -----------------------------
 
-df = pd.read_csv("data/christchurch_listings_clean.csv")
+df = pd.read_csv("out/christchurch_listings_clean.csv")
 
 print("Dataset loaded successfully.")
 print("Rows in dataset:", len(df))
@@ -200,7 +200,7 @@ print(
 # -----------------------------
 
 df.to_csv(
-    "data/christchurch_listings_with_area_codes.csv",
+    "out/christchurch_listings_with_area_codes.csv",
     index=False
 )
 

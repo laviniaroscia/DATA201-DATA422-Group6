@@ -3,7 +3,7 @@
 import pandas as pd
 
 # Load the dataset
-christchurch = pd.read_csv("data/filtered_dataset.csv")
+christchurch = pd.read_csv("out/filtered_dataset.csv")
 
 # Drop unnecessary columns
 columns_to_drop = [
@@ -103,6 +103,6 @@ print((christchurch_clean["price"] <= 0).sum())
 
 # Save the new dataset
 christchurch_clean.to_csv(
-    "data/christchurch_listings_clean.csv",
+    "out/christchurch_listings_clean.csv",
     index=False,
 )

@@ -215,7 +215,7 @@ def clean_bond_dataset():
     display_dataset_overview(filtered_data)
     display_summary_statistics(filtered_data)
 
-    filtered_data.to_csv("data/bond_data_clean.csv", index=False)
+    filtered_data.to_csv("out/bond_data_clean.csv", index=False)
     print("\nSaved cleaned dataset to data/bond_data_clean.csv")
 
     # Return the cleaned rental bond dataset.

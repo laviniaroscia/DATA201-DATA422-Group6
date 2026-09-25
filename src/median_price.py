@@ -9,7 +9,7 @@ Input: christchurch_listings_with_area_codes.csv
 
 import pandas as pd
 
-INPUT_CSV = "data/christchurch_listings_with_area_codes.csv"
+INPUT_CSV = "out/christchurch_listings_with_area_codes.csv"
 CHRISTCHURCH_CENTRAL_ID = 326600
 
 def main():

@@ -3,8 +3,8 @@ import pandas as pd
 """ Join together both datasets on the area code and time. """
 def join_listings_and_bonds():
 
-    listings_path = 'data/christchurch_listings_with_area_codes.csv'
-    bonds_path = 'data/bond_data_clean.csv'
+    listings_path = 'out/christchurch_listings_with_area_codes.csv'
+    bonds_path = 'out/bond_data_clean.csv'
 
     listings = pd.read_csv(listings_path)
     bonds = pd.read_csv(bonds_path)
