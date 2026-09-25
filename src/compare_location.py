@@ -121,7 +121,7 @@ def plot_property_counts(comparison):
     plt.tight_layout()
 
     plt.savefig(
-        "images/airbnb_vs_long_term_properties.png",
+        "out/images/airbnb_vs_long_term_properties.png",
         dpi=300,
         bbox_inches="tight"
     )

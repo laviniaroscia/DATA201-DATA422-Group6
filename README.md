@@ -272,7 +272,7 @@ The next largest gaps were observed in:
 - **Addington North:** ~$157 per night
 - **Christchurch Central:** ~$153 per night
 
-![Median rental price gap by area](images/rental_price_gap_by_area.png)
+![Median rental price gap by area](out/images/rental_price_gap_by_area.png)
 
 ---
 
@@ -300,4 +300,4 @@ The comparison was carried out separately for each quarter to avoid mixing obser
 
 The latest available quarter was **April–June 2026**.
 
-![Airbnb vs Long-Term Rental Properties](images/airbnb_vs_long_term_properties.png)
+![Airbnb vs Long-Term Rental Properties](out/images/airbnb_vs_long_term_properties.png)

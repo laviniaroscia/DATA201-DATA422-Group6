@@ -65,7 +65,7 @@ def plot_median_price_gap(gap_by_area):
     plt.xticks(rotation=45, ha="right")
     plt.tight_layout()
     plt.savefig(
-        "images/rental_price_gap_by_area.png",
+        "out/images/rental_price_gap_by_area.png",
         dpi=300,
         bbox_inches="tight"
     )
