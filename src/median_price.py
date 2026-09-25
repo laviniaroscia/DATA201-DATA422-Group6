@@ -7,14 +7,15 @@ Input: christchurch_listings_with_area_codes.csv
        since it hits the Koordinates API)
 """
 
-import pandas as pd
-
-INPUT_CSV = "out/christchurch_listings_with_area_codes.csv"
 CHRISTCHURCH_CENTRAL_ID = 326600
 
+input_csv = "out/christchurch_listings_with_area_codes.csv"
+
+import pandas as pd
+
 def main():
-    df = pd.read_csv(INPUT_CSV)
-    print(f"Loaded {len(df)} rows from {INPUT_CSV}")
+    df = pd.read_csv(input_csv)
+    print(f"Loaded {len(df)} rows from {input_csv}")
 
     # area_code can come back as a string or float depending on how the
     # API/CSV round-trip handled it — coerce to numeric so the filter works

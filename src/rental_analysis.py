@@ -1,4 +1,9 @@
-""" Rental analysis for Week 9 """
+""" Rental analysis for Week 9
+
+Compare Airbnb and long-term rental prices across Christchurch area codes
+to identify locations with the largest short-term versus long-term rental price gaps. """
+
+output_rental_price_gap_by_area_img = "out/images/rental_price_gap_by_area.png"
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -65,7 +70,7 @@ def plot_median_price_gap(gap_by_area):
     plt.xticks(rotation=45, ha="right")
     plt.tight_layout()
     plt.savefig(
-        "out/images/rental_price_gap_by_area.png",
+        output_rental_price_gap_by_area_img,
         dpi=300,
         bbox_inches="tight"
     )

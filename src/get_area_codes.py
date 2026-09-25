@@ -1,3 +1,9 @@
+""" Retrieve area codes for Airbnb listings by matching their latitude and longitude coordinates
+using the Koordinates API. """
+
+input_csv = "out/christchurch_listings_clean.csv"
+output_csv = "out/christchurch_listings_with_area_codes.csv"
+
 import pandas as pd
 import requests
 from concurrent.futures import ThreadPoolExecutor
@@ -8,7 +14,7 @@ from tqdm import tqdm
 # 1. Load the cleaned Airbnb CSV
 # -----------------------------
 
-df = pd.read_csv("out/christchurch_listings_clean.csv")
+df = pd.read_csv(input_csv)
 
 print("Dataset loaded successfully.")
 print("Rows in dataset:", len(df))
@@ -200,7 +206,7 @@ print(
 # -----------------------------
 
 df.to_csv(
-    "out/christchurch_listings_with_area_codes.csv",
+    output_csv,
     index=False
 )
 

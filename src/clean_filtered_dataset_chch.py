@@ -1,9 +1,12 @@
 ''' Clean the filtered dataset for Christchurch '''
 
+input_csv = "out/filtered_dataset.csv"
+output_csv = "out/christchurch_listings_clean.csv"
+
 import pandas as pd
 
 # Load the dataset
-christchurch = pd.read_csv("out/filtered_dataset.csv")
+christchurch = pd.read_csv(input_csv)
 
 # Drop unnecessary columns
 columns_to_drop = [
@@ -103,6 +106,6 @@ print((christchurch_clean["price"] <= 0).sum())
 
 # Save the new dataset
 christchurch_clean.to_csv(
-    "out/christchurch_listings_clean.csv",
+    output_csv,
     index=False,
 )

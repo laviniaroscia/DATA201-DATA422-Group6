@@ -1,9 +1,7 @@
 ''' Filtering csv files '''
 
-import pandas as pd
-
 # Create a dictionary with file path and date
-FILES_DATES = {
+files_dates = {
     "data/Oct2025.csv": "October 2025",
     "data/Nov2025.csv": "November 2025",
     "data/Dec2025.csv": "December 2025",
@@ -15,11 +13,17 @@ FILES_DATES = {
     "data/Jun2026.csv": "June 2026"
 }
 
+output_csv = "out/filtered_dataset.csv"
+
+all_christchurch_data = []
+
+import pandas as pd
+
 # Create the dataframe
 df = []
 
 # Go through the dictionary to create the dataframe
-for file_path, date in FILES_DATES.items():
+for file_path, date in files_dates.items():
 
     # Read the csv file
     dataset = pd.read_csv(file_path)
@@ -37,8 +41,6 @@ for file_path, date in FILES_DATES.items():
 concat_dataset = pd.concat(df, ignore_index=True)
 
 # Write the final csv file
-concat_dataset.to_csv("out/filtered_dataset.csv", index=False)
+concat_dataset.to_csv(output_csv, index=False)
 
-all_data = []
-
-all_data = concat_dataset
+all_christchurch_data = concat_dataset

@@ -1,15 +1,16 @@
 """ Rental bond data cleaning for Week 8 """
 
+input_csv = 'data/Detailed-Quarterly-Tenancy-Q1-2020-Q3-2026.csv'
+output_csv = "out/bond_data_clean.csv"
+
 import pandas as pd
 import numpy as np
-
-file_path = 'data/Detailed-Quarterly-Tenancy-Q1-2020-Q3-2026.csv'
 
 """ Clean the rental bond dataset. """
 def clean_bond_dataset():
 
     # Read the csv file
-    bond_df = pd.read_csv(file_path)
+    bond_df = pd.read_csv(input_csv)
 
     # Display dataset overview and data types before applying data cleaning steps
     print("\nBefore Data Cleaning (All Data): Rental Bond Dataset")
@@ -215,7 +216,7 @@ def clean_bond_dataset():
     display_dataset_overview(filtered_data)
     display_summary_statistics(filtered_data)
 
-    filtered_data.to_csv("out/bond_data_clean.csv", index=False)
+    filtered_data.to_csv(output_csv, index=False)
     print("\nSaved cleaned dataset to data/bond_data_clean.csv")
 
     # Return the cleaned rental bond dataset.

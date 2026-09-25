@@ -1,5 +1,10 @@
 """ Compare Airbnb listings and rental bonds by area code """
 
+input_airbnb_csv = "out/christchurch_listings_with_area_codes.csv"
+input_rental_bond_csv = "out/bond_data_clean.csv"
+
+output_airbnb_vs_long_term_properties_img = "out/images/airbnb_vs_long_term_properties.png"
+
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -121,7 +126,7 @@ def plot_property_counts(comparison):
     plt.tight_layout()
 
     plt.savefig(
-        "out/images/airbnb_vs_long_term_properties.png",
+        output_airbnb_vs_long_term_properties_img,
         dpi=300,
         bbox_inches="tight"
     )
@@ -131,11 +136,11 @@ def plot_property_counts(comparison):
 def main():
 
     airbnb = pd.read_csv(
-        "out/christchurch_listings_with_area_codes.csv"
+        input_airbnb_csv
     )
 
     bonds = pd.read_csv(
-        "out/bond_data_clean.csv"
+        input_rental_bond_csv
     )
 
     comparison = compare_property_counts(
