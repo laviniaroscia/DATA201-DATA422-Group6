@@ -28,4 +28,4 @@ The pipeline iterates through the `files_dates` mapping, which links each monthl
 
 ## 4. Coding and Software Strategies
 
-The coding strategy is to organize imports, inputs, and outputs as distinct parts. In `data_filtering.py`, pandas is imported for CSV handling; `files_dates` pairs each input CSV path with its Month-Year label; and `output_csv` specifies `filtered_dataset.csv` in the `out` directory.
+The coding strategy is to organize imports, inputs, and outputs as distinct parts. In `data_filtering.py`, pandas is imported for CSV handling; `files_dates` pairs each input CSV path with its Month-Year label; and `output_csv` specifies `filtered_dataset.csv` in the `out` directory. This follows the "no magic numbers" principle from Week 9 lecture, which recommends defining parameters with clear names near the top of a file rather than hardcoding values inline.
