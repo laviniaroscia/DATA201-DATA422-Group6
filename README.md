@@ -8,12 +8,56 @@ of properties available in different Statistical Area 2 (SA2) locations.
 
 ---
 
+## Automated Data Pipeline
+
+The complete data wrangling workflow was automated to make the analysis
+reproducible and easy to update when new Airbnb monthly data become available.
+
+The pipeline:
+
+1. Detects the monthly Airbnb CSV files in the `data` folder.
+2. Filters the Airbnb data to Christchurch City.
+3. Combines the monthly Airbnb snapshots and assigns their corresponding
+   scrape/publish dates.
+4. Cleans the Christchurch Airbnb dataset.
+5. Cleans and validates the Rental Bond dataset.
+6. Matches Airbnb coordinates to Statistical Area 2 (SA2) locations using
+   the Koordinates API.
+7. Combines Airbnb and Rental Bond data where required for the analyses.
+8. Runs the Airbnb and rental analyses.
+9. Updates the output plots.
+
+The complete workflow can be executed with a single command:
+
+```bash
+python run_pipeline.py
+```
+### SA2 Coordinate Lookup and Caching
+
+Airbnb listings are matched to Statistical Area 2 (SA2) locations using their
+latitude and longitude coordinates and the Koordinates API.
+
+To avoid repeating API requests every time the pipeline is executed, previously
+matched coordinates are stored in:
+
+`out/area_code_lookup.csv`
+
+When the pipeline is run again, the existing lookup table is loaded and only
+coordinates that have not previously been matched are sent to the Koordinates
+API. The stored and newly retrieved results are then used to assign `area_code`
+and `area_name` to the complete Airbnb dataset.
+
+This makes subsequent pipeline runs faster and avoids unnecessary API requests
+when adding new monthly Airbnb data.
+
+---
+
 ## Dataset 1 — Airbnb Listings
 
 **Source:** [Inside Airbnb](https://insideairbnb.com/get-the-data/)  
 **Location:** Christchurch, New Zealand  
-**Dataset date:** 13 August 2026  
-**Original size:** 50,932 rows × 18 columns
+**Period analysed:** October 2025 – August 2026  
+**Columns:** 18
 
 | Column | Description |
 |---|---|
@@ -36,7 +80,13 @@ of properties available in different Statistical Area 2 (SA2) locations.
 | `number_of_reviews_ltm` | Number of reviews in the last 12 months |
 | `license` | Permit or registration information |
 
+Monthly Airbnb snapshots were combined to create a longitudinal dataset.
+Each raw file is automatically identified from its filename (for example,
+`Aug2026.csv`), filtered to Christchurch City, and assigned its corresponding
+scrape/publish date.
+
 ---
+
 ## Airbnb Data Analysis
 
 An exploratory analysis was performed on the Christchurch Airbnb listings to examine price patterns, review activity, and highly reviewed properties across the available monthly snapshots.
@@ -260,6 +310,78 @@ Bond dataset was saved for use in the subsequent analyses.
 
 ---
 
+## Project Structure
+
+The project is organised into separate scripts for data preprocessing,
+geographic matching, analysis, and pipeline orchestration.
+
+```text
+data/
+    Monthly Airbnb CSV files
+    Rental Bond dataset
+
+out/
+    filtered_dataset.csv
+    christchurch_listings_clean.csv
+    christchurch_listings_with_area_codes.csv
+    bond_data_clean.csv
+    area_code_lookup.csv
+    images/
+
+data_filtering.py
+clean_filtered_dataset_chch.py
+rental_bond_data_cleaning.py
+get_area_codes.py
+join_datasets.py
+airbnb_analysis.py
+rental_analysis.py
+compare_location.py
+median_price.py
+run_pipeline.py
+```
+
+### Scripts
+
+| Script | Purpose |
+|---|---|
+| `data_filtering.py` | Detects, filters, and combines the monthly Airbnb datasets |
+| `clean_filtered_dataset_chch.py` | Cleans and validates the Christchurch Airbnb data |
+| `rental_bond_data_cleaning.py` | Cleans and validates the Rental Bond dataset |
+| `get_area_codes.py` | Matches Airbnb coordinates to SA2 locations and manages the coordinate lookup cache |
+| `join_datasets.py` | Joins Airbnb and Rental Bond data by geographic area and observation period |
+| `airbnb_analysis.py` | Performs Airbnb price and review analyses |
+| `rental_analysis.py` | Compares short-term Airbnb prices with long-term rental prices |
+| `compare_location.py` | Compares the number of Airbnb and long-term rental properties by area |
+| `median_price.py` | Calculates the median Airbnb price in Christchurch Central |
+| `run_pipeline.py` | Orchestrates the complete data wrangling and analysis workflow |
+
+---
+
+## How to Run the Project
+
+1. Place the required raw datasets in the `data` folder:
+   - Monthly Airbnb `listings.csv` files, renamed using the `MonYYYY.csv`
+     format (for example, `Jul2026.csv` or `Aug2026.csv`)
+   - The Rental Bond dataset
+
+2. Ensure that the required Python packages are installed.
+
+3. Run the complete pipeline from the project root:
+
+```bash
+python run_pipeline.py
+```
+
+The pipeline will automatically preprocess the datasets, perform the geographic
+matching, run the analyses, and update the generated outputs and plots in the
+`out` folder.
+
+For a new Airbnb month, its corresponding scrape/publish date must also be
+added to the `scrape_dates` dictionary in `data_filtering.py`, since this
+information is not included in the downloaded Airbnb CSV file.
+
+---
+
 ## Median Airbnb Price in Christchurch Central
 
 Christchurch Central was identified using **Location ID 326600**.
@@ -267,7 +389,7 @@ Christchurch Central was identified using **Location ID 326600**.
 The Airbnb dataset was filtered using the corresponding `area_code`, and the
 median listing price was calculated from the `price` column.
 
-**Median Airbnb price in Christchurch Central: $239.00 per night**
+**Median Airbnb price in Christchurch Central: $246.00 per night**
 
 The median was used rather than the mean because Airbnb prices can contain
 extreme values that may distort the average.
