@@ -5,12 +5,23 @@ import pandas as pd
 import requests
 from concurrent.futures import ThreadPoolExecutor
 from tqdm import tqdm
+import os
+from dotenv import load_dotenv
 
 input_csv = "out/christchurch_listings_clean.csv"
 output_csv = "out/christchurch_listings_with_area_codes.csv"
 lookup_csv = "out/area_code_lookup.csv"
 
-API_KEY = "2ef18a6e28154d0cb4abee56df55da73"
+load_dotenv()
+
+API_KEY = os.getenv("KOORDINATES_API_KEY")
+
+if not API_KEY:
+    raise ValueError(
+        "KOORDINATES_API_KEY not found. "
+        "Add it to the .env file in the project root."
+    )
+
 LAYER_ID = 98970
 
 
