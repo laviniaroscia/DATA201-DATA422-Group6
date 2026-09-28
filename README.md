@@ -298,16 +298,17 @@ out/
     area_code_lookup.csv
     images/
 
-data_filtering.py
-clean_filtered_dataset_chch.py
-rental_bond_data_cleaning.py
-get_area_codes.py
-join_datasets.py
-airbnb_analysis.py
-rental_analysis.py
-compare_location.py
-median_price.py
-run_pipeline.py
+src/
+    data_filtering.py
+    clean_filtered_dataset_chch.py
+    rental_bond_data_cleaning.py
+    get_area_codes.py
+    join_datasets.py
+    airbnb_analysis.py
+    rental_analysis.py
+    compare_location.py
+    median_price.py
+    run_pipeline.py
 ```
 
 ### Scripts
@@ -336,10 +337,17 @@ run_pipeline.py
 
 2. Ensure that the required Python packages are installed.
 
-3. Run the complete pipeline from the project root:
+3. Configure a valid Koordinates API key for the geographic matching step.
+   The API key should not be committed to the repository.
+
+4. Create a `.env` file in the project root and add your Koordinates API key:
+
+   `KOORDINATES_API_KEY=your_api_key`
+
+5. Run the complete pipeline from the project root:
 
 ```bash
-python run_pipeline.py
+python src/run_pipeline.py
 ```
 
 The pipeline will automatically preprocess the datasets, perform the geographic
