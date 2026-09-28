@@ -30,7 +30,7 @@ The pipeline:
 The complete workflow can be executed with a single command:
 
 ```bash
-python run_pipeline.py
+python src/run_pipeline.py
 ```
 ### SA2 Coordinate Lookup and Caching
 
