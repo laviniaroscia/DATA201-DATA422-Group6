@@ -17,6 +17,8 @@ The pipeline reads nine CSV files using the following file-to-month mapping:
 | `data/Apr2026.csv` | April 2026 |
 | `data/May2026.csv` | May 2026 |
 | `data/Jun2026.csv` | June 2026 |
+| `data/Jul2026.csv` | July 2026 |
+| `data/Aug2026.csv` | August 2026 |
 
 ## 2. Outputs from the Pipeline
 
