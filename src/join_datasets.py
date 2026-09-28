@@ -1,16 +1,21 @@
+""" Join Airbnb listing data and rental bond data on area code and time. """
+
+input_airbnb_csv = "out/christchurch_listings_with_area_codes.csv"
+input_rental_bond_csv = "out/bond_data_clean.csv"
+
 import pandas as pd
 
 """ Join together both datasets on the area code and time. """
 def join_listings_and_bonds():
 
-    listings_path = 'data/christchurch_listings_with_area_codes.csv'
-    bonds_path = 'data/bond_data_clean.csv'
-
-    listings = pd.read_csv(listings_path)
-    bonds = pd.read_csv(bonds_path)
+    listings = pd.read_csv(input_airbnb_csv)
+    bonds = pd.read_csv(input_rental_bond_csv)
 
     bonds["Location Id"] = bonds["Location Id"].fillna(0)
     bonds["Location Id"] = bonds["Location Id"].astype("int64")
+
+    listings["area_code"] = listings["area_code"].fillna(0)
+    listings["area_code"] = listings["area_code"].astype("int64")
     
     listings["date"] = pd.to_datetime(
         listings["date"],
