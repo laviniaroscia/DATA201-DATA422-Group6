@@ -12,7 +12,7 @@ of properties available in different Statistical Area 2 (SA2) locations.
 
 **Source:** [Inside Airbnb](https://insideairbnb.com/get-the-data/)  
 **Location:** Christchurch, New Zealand  
-**Dataset date:** 19 June 2026  
+**Dataset date:** 13 August 2026  
 **Original size:** 50,932 rows × 18 columns
 
 | Column | Description |
