@@ -1,35 +1,21 @@
 """ Retrieve area codes for Airbnb listings by matching their latitude and longitude coordinates
 using the Koordinates API. """
 
-input_csv = "out/christchurch_listings_clean.csv"
-output_csv = "out/christchurch_listings_with_area_codes.csv"
-
 import pandas as pd
 import requests
 from concurrent.futures import ThreadPoolExecutor
 from tqdm import tqdm
 
-
-# -----------------------------
-# 1. Load the cleaned Airbnb CSV
-# -----------------------------
-
-df = pd.read_csv(input_csv)
-
-print("Dataset loaded successfully.")
-print("Rows in dataset:", len(df))
-
-
-# -----------------------------
-# 2. Koordinates API settings
-# -----------------------------
+input_csv = "out/christchurch_listings_clean.csv"
+output_csv = "out/christchurch_listings_with_area_codes.csv"
+lookup_csv = "out/area_code_lookup.csv"
 
 API_KEY = "2ef18a6e28154d0cb4abee56df55da73"
 LAYER_ID = 98970
 
 
 # -----------------------------
-# 3. Function to query SA2 area
+# Function to query SA2 area
 # -----------------------------
 
 def get_area_info(latitude, longitude):
@@ -88,27 +74,7 @@ def get_area_info(latitude, longitude):
 
 
 # -----------------------------
-# 4. Keep only unique coordinates
-# -----------------------------
-
-unique_coords = (
-    df[["latitude", "longitude"]]
-    .dropna()
-    .drop_duplicates()
-)
-
-coords = list(
-    unique_coords.itertuples(
-        index=False,
-        name=None
-    )
-)
-
-print("Unique coordinates to query:", len(coords))
-
-
-# -----------------------------
-# 5. Function used by the threads
+# Function used by the threads
 # -----------------------------
 
 def query_coordinate(coord):
@@ -122,95 +88,177 @@ def query_coordinate(coord):
 
 
 # -----------------------------
-# 6. Query Koordinates in parallel
+# Main area-code processing
 # -----------------------------
 
-with ThreadPoolExecutor(max_workers=8) as executor:
+def add_area_codes():
 
-    results = list(
-        tqdm(
-            executor.map(
-                query_coordinate,
-                coords
-            ),
-            total=len(coords),
-            desc="Querying Koordinates"
+    # Load cleaned Airbnb CSV
+    df = pd.read_csv(input_csv)
+
+    print("\nDataset loaded successfully.")
+    print("Rows in dataset:", len(df))
+
+    # Keep only unique coordinates
+    unique_coords = (
+        df[["latitude", "longitude"]]
+        .dropna()
+        .drop_duplicates()
+    )
+
+    print(
+        "Unique coordinates in dataset:",
+        len(unique_coords)
+    )
+
+    # Load existing coordinate lookup if available
+    try:
+        lookup_df = pd.read_csv(lookup_csv)
+
+        print(
+            "Coordinates already stored:",
+            len(lookup_df)
+        )
+
+    except FileNotFoundError:
+
+        lookup_df = pd.DataFrame(
+            columns=[
+                "latitude",
+                "longitude",
+                "area_code",
+                "area_name"
+            ]
+        )
+
+        print("No existing coordinate lookup found.")
+
+    # Find coordinates that have not been queried yet
+    coords_to_query = unique_coords.merge(
+        lookup_df[
+            ["latitude", "longitude"]
+        ],
+        on=["latitude", "longitude"],
+        how="left",
+        indicator=True
+    )
+
+    coords_to_query = coords_to_query[
+        coords_to_query["_merge"] == "left_only"
+    ][
+        ["latitude", "longitude"]
+    ]
+
+    coords = list(
+        coords_to_query.itertuples(
+            index=False,
+            name=None
         )
     )
 
-
-# -----------------------------
-# 7. Create coordinate → SA2 lookup
-# -----------------------------
-
-area_lookup = {
-    coord: result
-    for coord, result in zip(
-        coords,
-        results
+    print(
+        "New coordinates to query:",
+        len(coords)
     )
-}
 
+    # Query only new coordinates
+    if coords:
 
-# -----------------------------
-# 8. Add SA2 information to dataframe
-# -----------------------------
+        with ThreadPoolExecutor(
+            max_workers=8
+        ) as executor:
 
-def lookup_area(row):
+            results = list(
+                tqdm(
+                    executor.map(
+                        query_coordinate,
+                        coords
+                    ),
+                    total=len(coords),
+                    desc="Querying Koordinates"
+                )
+            )
 
-    lat = row["latitude"]
-    lon = row["longitude"]
-
-    if pd.isna(lat) or pd.isna(lon):
-        return pd.Series([None, None])
-
-    return pd.Series(
-        area_lookup.get(
-            (lat, lon),
-            (None, None)
+        # Create dataframe with new results
+        new_lookup = pd.DataFrame(
+            [
+                {
+                    "latitude": coord[0],
+                    "longitude": coord[1],
+                    "area_code": result[0],
+                    "area_name": result[1]
+                }
+                for coord, result in zip(
+                    coords,
+                    results
+                )
+            ]
         )
-    )
 
+        # Add new results to existing lookup
+        lookup_df = pd.concat(
+            [
+                lookup_df,
+                new_lookup
+            ],
+            ignore_index=True
+        )
 
-df[
-    ["area_code", "area_name"]
-] = df.apply(
-    lookup_area,
-    axis=1
-)
+        # Save updated lookup
+        lookup_df.to_csv(
+            lookup_csv,
+            index=False
+        )
 
+        print(
+            "Coordinate lookup updated."
+        )
 
-# -----------------------------
-# 9. Check the results
-# -----------------------------
+    else:
+        print(
+            "No new coordinates to query."
+        )
 
-print(
-    df[
-        [
+    # Add area information to full Airbnb dataset
+    df = df.merge(
+        lookup_df,
+        on=[
             "latitude",
-            "longitude",
-            "area_code",
-            "area_name"
-        ]
-    ].head(10)
-)
+            "longitude"
+        ],
+        how="left"
+    )
 
-print(
-    "Missing area codes:",
-    df["area_code"].isna().sum()
-)
+    # Check results
+    print(
+        df[
+            [
+                "latitude",
+                "longitude",
+                "area_code",
+                "area_name"
+            ]
+        ].head(10)
+    )
+
+    print(
+        "Missing area codes:",
+        df["area_code"].isna().sum()
+    )
+
+    # Save final dataset
+    df.to_csv(
+        output_csv,
+        index=False
+    )
+
+    print(
+        "Dataset saved successfully as "
+        "'christchurch_listings_with_area_codes.csv'"
+    )
+
+    return df
 
 
-# -----------------------------
-# 10. Save the final dataset
-# -----------------------------
-
-df.to_csv(
-    output_csv,
-    index=False
-)
-
-print(
-    "Dataset saved successfully as "
-    "'christchurch_listings_with_area_codes.csv'"
-)
+if __name__ == "__main__":
+    add_area_codes()

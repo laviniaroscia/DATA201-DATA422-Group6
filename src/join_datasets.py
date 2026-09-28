@@ -37,6 +37,5 @@ def join_listings_and_bonds():
     return merged_df
 
     
-
-""" Start joining dataset"""
-join_listings_and_bonds()
+if __name__ == "__main__":
+    join_listings_and_bonds()

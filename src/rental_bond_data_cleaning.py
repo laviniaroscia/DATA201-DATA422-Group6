@@ -1,4 +1,4 @@
-""" Rental bond data cleaning for Week 8 """
+""" Rental bond data cleaning """
 
 input_csv = 'data/Detailed-Quarterly-Tenancy-Q1-2020-Q3-2026.csv'
 output_csv = "out/bond_data_clean.csv"
@@ -6,8 +6,8 @@ output_csv = "out/bond_data_clean.csv"
 import pandas as pd
 import numpy as np
 
-""" Clean the rental bond dataset. """
 def clean_bond_dataset():
+    """ Clean the rental bond dataset. """
 
     # Read the csv file
     bond_df = pd.read_csv(input_csv)
@@ -148,7 +148,8 @@ def clean_bond_dataset():
     print("Number Of Beds values imputed:", before_impute - after_impute)     
 
     # Sanity check: Specify the number of imputed records to review.
-    rows_to_check = int(input("\nEnter number of updated records to check (0 = show all): "))
+    rows_to_check = 10
+    
     # Identify records where Number Of Beds was updated during imputation.
     updated_records = filtered_data[
         filtered_data['Org_Number_Of_Beds'].fillna('NULL')
@@ -261,6 +262,6 @@ def filter_timeframe(df):
     return filtered_df
 
 
-""" Start data cleaning process. """
-clean_bond_dataset()
+if __name__ == "__main__":
+    clean_bond_dataset()
 

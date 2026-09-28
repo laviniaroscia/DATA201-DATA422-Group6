@@ -9,6 +9,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 def compare_property_counts(airbnb, bonds):
+    ''' Compare the count of properties for each location '''
 
     airbnb = airbnb.copy()
     bonds = bonds.copy()
@@ -89,6 +90,7 @@ def compare_property_counts(airbnb, bonds):
     return comparison
 
 def plot_property_counts(comparison):
+    ''' Plot the count of properties '''
 
     latest_quarter = comparison["quarter"].max()
 
@@ -133,7 +135,8 @@ def plot_property_counts(comparison):
 
     plt.show()
 
-def main():
+def run_location_comparison():
+    ''' Run locations comparison '''
 
     airbnb = pd.read_csv(
         input_airbnb_csv
@@ -152,6 +155,8 @@ def main():
 
     plot_property_counts(comparison)
 
+    return comparison
+
 
 if __name__ == "__main__":
-    main()
+    run_location_comparison()

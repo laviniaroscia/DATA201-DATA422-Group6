@@ -19,68 +19,82 @@ scrape_dates = {
     "August 2026": "2026-08-13"
 }
 
-data_folder = Path("data")
 
-# Find only monthly Airbnb CSV files
-csv_files = []
+def filter_airbnb_data():
+    ''' Filter AirBnB data '''
 
-for file_path in data_folder.glob("*.csv"):
-    try:
-        datetime.strptime(file_path.stem, "%b%Y")
-        csv_files.append(file_path)
-    except ValueError:
-        pass
+    data_folder = Path("data")
+    output_csv = "out/filtered_dataset.csv"
 
-# Sort files chronologically
-csv_files.sort(
-    key=lambda file: datetime.strptime(file.stem, "%b%Y")
-)
+    # Find only monthly Airbnb CSV files
+    csv_files = []
 
-# Check which files were found
-print(f"Airbnb files found: {len(csv_files)}")
+    for file_path in data_folder.glob("*.csv"):
+        try:
+            datetime.strptime(file_path.stem, "%b%Y")
+            csv_files.append(file_path)
+        except ValueError:
+            pass
 
-for file_path in csv_files:
-    date = datetime.strptime(
-        file_path.stem, "%b%Y"
-    ).strftime("%B %Y")
-    
-    print(f" - {date}")
+    # Sort files chronologically
+    csv_files.sort(
+        key=lambda file: datetime.strptime(file.stem, "%b%Y")
+    )
 
-output_csv = "out/filtered_dataset.csv"
+    # Check which files were found
+    print(f"Airbnb files found: {len(csv_files)}")
 
-all_christchurch_data = []
+    for file_path in csv_files:
+        date = datetime.strptime(
+            file_path.stem, "%b%Y"
+        ).strftime("%B %Y")
 
-# Create the dataframe
-df = []
+        print(f" - {date}")
 
-# Go through all CSV files
-for file_path in csv_files:
+    # Create dataframe list
+    df = []
 
-    # Extract month and year from filename
-    # Example: Aug2026.csv -> August 2026
-    date = datetime.strptime(file_path.stem, "%b%Y").strftime("%B %Y")
+    # Go through all CSV files
+    for file_path in csv_files:
 
-    # Read the CSV file
-    dataset = pd.read_csv(file_path)
+        # Extract month and year from filename
+        date = datetime.strptime(
+            file_path.stem, "%b%Y"
+        ).strftime("%B %Y")
 
-    # Filter for Christchurch City
-    filtered_data = dataset[
-        dataset["neighbourhood_group"] == "Christchurch City"
-    ].copy()
+        # Read CSV
+        dataset = pd.read_csv(file_path)
 
-    # Add column for month + year
-    filtered_data["date"] = date
+        # Filter for Christchurch City
+        filtered_data = dataset[
+            dataset["neighbourhood_group"] == "Christchurch City"
+        ].copy()
 
-    # Add column with scrape date
-    filtered_data["scrape_date"] = scrape_dates[date]
+        # Add month + year
+        filtered_data["date"] = date
 
-    # Add to dataframe list
-    df.append(filtered_data)
+        # Add scrape date
+        filtered_data["scrape_date"] = scrape_dates[date]
 
-# Concatenate all months
-concat_dataset = pd.concat(df, ignore_index=True)
+        # Add dataframe to list
+        df.append(filtered_data)
 
-# Write the final CSV file
-concat_dataset.to_csv(output_csv, index=False)
+    # Concatenate all months
+    concat_dataset = pd.concat(
+        df,
+        ignore_index=True
+    )
 
-all_christchurch_data = concat_dataset
+    # Save final dataset
+    concat_dataset.to_csv(
+        output_csv,
+        index=False
+    )
+
+    print(f"Filtered dataset saved to {output_csv}")
+
+    return concat_dataset
+
+
+if __name__ == "__main__":
+    filter_airbnb_data()
