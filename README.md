@@ -37,6 +37,35 @@ of properties available in different Statistical Area 2 (SA2) locations.
 | `license` | Permit or registration information |
 
 ---
+## Airbnb Data Analysis
+
+An exploratory analysis was performed on the Christchurch Airbnb listings to examine price patterns, review activity, and highly reviewed properties across the available monthly snapshots.
+
+### Price Distribution
+
+The distribution of Airbnb prices in Christchurch was examined after removing missing price values. Since the dataset contains a small number of very high prices, the plot was restricted to observations below the 99th percentile to improve readability while retaining the majority of the data.
+
+![Airbnb Price Distribution](out/images/airbnb_price_distribution.png)
+
+### Days Since Last Review
+
+To examine how recently Airbnb properties had received reviews, a new feature called `days_since_last_review` was calculated as:
+
+`days_since_last_review = scrape/publish date - last_review date`
+
+Because the analysis combines multiple monthly Airbnb snapshots, each month was matched with its corresponding scrape/publish date from Inside Airbnb rather than using a single fixed date for the entire dataset.
+
+The distribution was again displayed up to the 99th percentile to reduce the visual effect of extreme values.
+
+![Days Since Last Review](out/images/days_since_last_review.png)
+
+A small number of records produced negative values for `days_since_last_review`. Further inspection showed that these values were generally very small: most were between -1 and -3 days, although the minimum was -13 days. These records were retained rather than modified or removed, as they result directly from the available `last_review` values and the scrape/publish dates reported for each monthly dataset.
+
+### Properties with the Highest Number of Reviews
+
+Properties in the top 10% of `number_of_reviews` were identified to explore the most frequently reviewed Airbnb listings. The analysis reports the number of properties in this group, their total number of reviews, and information about the highest-reviewed listings.
+
+---
 
 ## Airbnb Data Cleaning
 
