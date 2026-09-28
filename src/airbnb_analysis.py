@@ -6,6 +6,9 @@ import numpy as np
 
 from data_filtering import all_christchurch_data
 
+output_price_distribution_img = "out/images/airbnb_price_distribution.png"
+output_review_distribution_img = "out/images/days_since_last_review.png"
+
 def plot_summary_statistics():
     """ Summary statistics for all columns """
 
@@ -49,42 +52,67 @@ def price_distribution():
     plt.ylabel("Frequency")
     plt.title("Distribution of Airbnb Prices in Christchurch")
 
+    plt.tight_layout()
+
+    plt.savefig(
+        output_price_distribution_img,
+        dpi=300,
+        bbox_inches="tight"
+    )
+
     plt.show()
 
 def days_since_last_review():
     """ Plot the distribution of days since last review """
 
-    # Create scrape date
-    scrape_date = pd.to_datetime("2026-06-19")
+    # Convert dates
+    all_christchurch_data["scrape_date"] = pd.to_datetime(
+        all_christchurch_data["scrape_date"]
+    )
 
-    # Convert data type
-    all_christchurch_data["last_review"] = pd.to_datetime(all_christchurch_data["last_review"])
+    all_christchurch_data["last_review"] = pd.to_datetime(
+        all_christchurch_data["last_review"]
+    )
 
-    # Find the number of days since last review
+    # Calculate days since last review
     all_christchurch_data["days_since_last_review"] = (
-        scrape_date - all_christchurch_data["last_review"]
+        all_christchurch_data["scrape_date"]
+        - all_christchurch_data["last_review"]
     ).dt.days
 
     # Check the new feature
     print("Shape of days since last review:")
-    print(all_christchurch_data["days_since_last_review"].describe())
+    print(
+        all_christchurch_data["days_since_last_review"].describe()
+    )
 
     # Remove missing values
-    review_days = all_christchurch_data["days_since_last_review"].dropna()
+    review_days = (
+        all_christchurch_data["days_since_last_review"]
+        .dropna()
+    )
 
-    # Remove the outliers
+    # Remove outliers
     upper_limit = review_days.quantile(0.99)
 
     review_days_filtered = review_days[
         review_days <= upper_limit
     ]
 
-    # Plot the distribution
+    # Plot distribution
     plt.hist(review_days_filtered, bins=30)
 
     plt.xlabel("Days Since Last Review")
     plt.ylabel("Frequency")
     plt.title("Distribution of Days Since Last Review")
+
+    plt.tight_layout()
+
+    plt.savefig(
+        output_review_distribution_img,
+        dpi=300,
+        bbox_inches="tight"
+    )
 
     plt.show()
 
