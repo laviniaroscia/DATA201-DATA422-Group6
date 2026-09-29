@@ -360,6 +360,183 @@ information is not included in the downloaded Airbnb CSV file.
 
 ---
 
+## Design Principles and Coding Best Practices
+
+This section documents the main design decisions adopted when reviewing and
+automating the project pipeline, following the coding practices discussed in
+Week 9.
+
+### Pipeline Inputs and Outputs
+
+The pipeline was designed to start from the raw datasets and reproduce the
+processed datasets, analyses, and visual outputs without requiring the
+individual scripts to be executed manually.
+
+#### Inputs
+
+The main pipeline inputs are:
+
+- Monthly Airbnb `listings.csv` files downloaded from Inside Airbnb and renamed
+  using the `MonYYYY.csv` format (for example, `Aug2026.csv`).
+- The corresponding Airbnb scrape/publish dates, stored in the `scrape_dates`
+  dictionary because these dates are not included in the downloaded CSV files.
+- The New Zealand Rental Bond dataset from Tenancy Services.
+- A Koordinates API key, stored outside the source code in a `.env` file and
+  used to retrieve SA2 geographic information when required.
+
+#### Outputs
+
+The pipeline produces a set of intermediate and final outputs in the `out`
+folder, including:
+
+- `filtered_dataset.csv` — combined monthly Airbnb data filtered to
+  Christchurch City.
+- `christchurch_listings_clean.csv` — cleaned Airbnb data.
+- `area_code_lookup.csv` — cached coordinate-to-SA2 matches.
+- `christchurch_listings_with_area_codes.csv` — Airbnb data enriched with
+  SA2 area codes and names.
+- `bond_data_clean.csv` — cleaned Rental Bond data.
+- Updated analysis plots stored in `out/images/`.
+
+The processed datasets are used by the analysis scripts to calculate Airbnb
+price and review statistics, compare short-term and long-term rental prices,
+compare property counts by area, and calculate the median Airbnb price in
+Christchurch Central.
+
+### Pipeline Design and Main Steps
+
+The pipeline follows a modular design in which each script is responsible for
+a specific stage of the data wrangling or analysis process. The individual
+processing functions are orchestrated by `run_pipeline.py`, allowing the
+complete workflow to be executed with a single command.
+
+The main stages are:
+
+1. **Airbnb filtering and integration** — monthly Airbnb files are detected,
+   filtered to Christchurch City, assigned their scrape/publish dates, and
+   combined into a single dataset.
+
+2. **Airbnb cleaning** — unnecessary columns are removed and data quality
+   checks are performed while retaining observations that may still be useful
+   for non-price analyses.
+
+3. **Rental Bond cleaning** — the Rental Bond data are filtered to the required
+   timeframe, checked for invalid or duplicate records, and missing bedroom
+   values are imputed only when a unique match can be identified.
+
+4. **Geographic enrichment** — Airbnb coordinates are matched to SA2 area codes
+   and names using the Koordinates API. Previously retrieved matches are reused
+   through the coordinate lookup cache.
+
+5. **Data integration** — Airbnb and Rental Bond data are aligned by geographic
+   area and observation period where required.
+
+6. **Analysis and output generation** — the processed data are used to perform
+   the Airbnb and rental analyses and regenerate the output plots.
+
+This structure separates data processing, external API access, data integration,
+and analysis into distinct components. It also allows individual stages to be
+tested or executed independently while maintaining a single entry point for the
+complete workflow.
+
+### Coding Best Practices and Changes
+
+As part of the Week 9 code review, the project was revisited to improve
+readability, maintainability, reproducibility, and automation. The following
+high-level changes were made:
+
+- **Modular functions:** Processing and analysis steps were organised into
+  reusable functions rather than relying on code that executes automatically
+  when a script is imported. This makes individual stages easier to test,
+  reuse, and orchestrate.
+
+- **Main guards:** Scripts use `if __name__ == "__main__":` so that they can
+  still be executed independently while also being safely imported by the
+  pipeline without unintentionally running their processing code.
+
+- **Single pipeline entry point:** A `run_pipeline.py` script was introduced to
+  orchestrate the individual processing and analysis functions. This reduces
+  the need for manual execution and ensures that the stages are run in the
+  correct order.
+
+- **Removal of interactive steps:** Interactive input was removed from the
+  automated workflow where it would interrupt pipeline execution. Diagnostic
+  checks are instead performed automatically so that the complete pipeline can
+  run without user intervention.
+
+- **Separation of sensitive configuration:** The Koordinates API key was moved
+  out of the source code and into a `.env` file. The `.env` file is excluded
+  from version control using `.gitignore`, preventing credentials from being
+  stored in the repository.
+
+- **Caching external API results:** Coordinate-to-SA2 matches are stored in
+  `area_code_lookup.csv`. When the pipeline is run again, only previously unseen
+  coordinates are queried through the Koordinates API. This reduces unnecessary
+  API requests and improves execution time.
+
+- **Separation of responsibilities:** Filtering, cleaning, geographic matching,
+  joining, analysis, and orchestration are kept in separate scripts. This makes
+  the purpose of each component clearer and limits the amount of code that must
+  be changed when one stage of the workflow is updated.
+
+- **Reproducible file handling:** Monthly Airbnb files follow a consistent
+  `MonYYYY.csv` naming convention and are automatically detected and ordered by
+  the filtering stage. This makes it easier to incorporate additional monthly
+  datasets without rewriting the processing logic.
+
+These changes were intended to make the project easier to understand, maintain,
+rerun, and extend while preserving the original analysis decisions.
+
+### Sanity Check Example
+
+One sanity check used in the Airbnb cleaning stage verifies that there are no
+duplicate observations for the same listing within the same monthly snapshot.
+
+Since the dataset combines multiple monthly Airbnb files, the same listing `id`
+is expected to appear more than once across the complete dataset. However, the
+combination of `id` and `date` should be unique because each listing should
+appear only once within a given monthly snapshot.
+
+The check can be performed using:
+
+```python
+duplicate_id_date = df.duplicated(
+    subset=["id", "date"]
+).sum()
+
+print("Duplicate id-date records:", duplicate_id_date)
+```
+
+The expected result is:
+
+```text
+Duplicate id-date records: 0
+```
+
+A value greater than zero would indicate that one or more monthly files may
+contain duplicated listings or that the same monthly data may have been
+included more than once in the pipeline. This would need to be investigated
+before continuing with the analyses because duplicated observations could
+affect property counts and summary statistics.
+
+In the final processed Airbnb dataset, no duplicate `id`–`date` records were
+found.
+
+### Use of AI
+
+OpenAI ChatGPT was used during the development and review of this project as a
+support tool for discussing coding practices, reviewing the structure of the
+data wrangling workflow, troubleshooting code, and refining the documentation.
+
+For the design principles documentation, ChatGPT was used to help organise and
+describe the pipeline inputs, outputs, main processing stages, and the
+high-level coding strategies adopted during the project.
+
+The final code, design decisions, data-cleaning choices, analyses, and outputs
+were reviewed and tested by the project team.
+
+---
+
 ## Airbnb Data Analysis
 
 An exploratory analysis was performed on the Christchurch Airbnb listings to examine price patterns, review activity, and highly reviewed properties across the available monthly snapshots.
