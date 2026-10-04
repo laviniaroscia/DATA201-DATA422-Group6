@@ -1,8 +1,10 @@
 """ Rental bond data cleaning """
 
+# Input and output parameters
 input_csv = 'data/Detailed-Quarterly-Tenancy-Q1-2020-Q3-2026.csv'
 output_csv = "out/bond_data_clean.csv"
 
+# Load libraries / packages
 import pandas as pd
 import numpy as np
 

@@ -1,6 +1,7 @@
 """ Retrieve area codes for Airbnb listings by matching their latitude and longitude coordinates
 using the Koordinates API. """
 
+# Load libraries / packages
 import pandas as pd
 import requests
 from concurrent.futures import ThreadPoolExecutor
@@ -8,6 +9,7 @@ from tqdm import tqdm
 import os
 from dotenv import load_dotenv
 
+# Input and output parameters
 input_csv = "out/christchurch_listings_clean.csv"
 output_csv = "out/christchurch_listings_with_area_codes.csv"
 lookup_csv = "out/area_code_lookup.csv"

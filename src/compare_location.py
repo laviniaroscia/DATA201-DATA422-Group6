@@ -1,10 +1,11 @@
 """ Compare Airbnb listings and rental bonds by area code """
 
+# Input and output parameters
 input_airbnb_csv = "out/christchurch_listings_with_area_codes.csv"
 input_rental_bond_csv = "out/bond_data_clean.csv"
-
 output_airbnb_vs_long_term_properties_img = "out/images/airbnb_vs_long_term_properties.png"
 
+# Load libraries / packages
 import pandas as pd
 import matplotlib.pyplot as plt
 

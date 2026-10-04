@@ -1,12 +1,12 @@
 """ Airbnb analysis """
 
+# Load libraries / packages
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-
+# Input and output parameters
 input_csv = "out/filtered_dataset.csv"
-
 output_price_distribution_img = "out/images/airbnb_price_distribution.png"
 output_review_distribution_img = "out/images/days_since_last_review.png"
 

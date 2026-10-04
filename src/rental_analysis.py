@@ -3,8 +3,10 @@
 Compare Airbnb and long-term rental prices across Christchurch area codes
 to identify locations with the largest short-term versus long-term rental price gaps. """
 
+# Input and output parameters
 output_rental_price_gap_by_area_img = "out/images/rental_price_gap_by_area.png"
 
+# Load libraries / packages
 import pandas as pd
 import matplotlib.pyplot as plt
 

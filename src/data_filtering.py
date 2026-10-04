@@ -1,8 +1,13 @@
 ''' Filtering csv files '''
 
+# Load libraries / packages
 import pandas as pd
 from pathlib import Path
 from datetime import datetime
+
+# Input and output parameters
+data_folder = Path("data")
+output_csv = "out/filtered_dataset.csv"
 
 # Get the scrape dates for later analysis
 scrape_dates = {
@@ -19,12 +24,8 @@ scrape_dates = {
     "August 2026": "2026-08-13"
 }
 
-
 def filter_airbnb_data():
     ''' Filter AirBnB data '''
-
-    data_folder = Path("data")
-    output_csv = "out/filtered_dataset.csv"
 
     # Find only monthly Airbnb CSV files
     csv_files = []

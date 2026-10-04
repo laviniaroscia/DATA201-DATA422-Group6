@@ -1,11 +1,11 @@
 ''' Clean the filtered dataset for Christchurch '''
 
+# Load libraries / packages
 import pandas as pd
 
-
+# Input and output parameters
 input_csv = "out/filtered_dataset.csv"
 output_csv = "out/christchurch_listings_clean.csv"
-
 
 def clean_airbnb_data():
 

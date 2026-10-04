@@ -7,11 +7,11 @@ Input: christchurch_listings_with_area_codes.csv
        since it hits the Koordinates API)
 """
 
+# Load libraries / packages
 import pandas as pd
 
-
+# Input and output parameters
 CHRISTCHURCH_CENTRAL_ID = 326600
-
 input_csv = "out/christchurch_listings_with_area_codes.csv"
 
 
