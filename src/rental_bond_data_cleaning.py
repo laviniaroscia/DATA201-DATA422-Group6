@@ -64,23 +64,8 @@ def clean_bond_dataset():
          .drop_duplicates()
     )
 
-    print("\nLookup records for Number Of Beds imputation:", beds_reference.shape)    
-
-    # Display sample combinations where multiple Number Of Beds values exist for the same
-    # Location Id, Dwelling Type, and Median Rent. These combinations are ambiguous
-    # and cannot be used for direct Number Of Beds imputation.
-
-    print("\nSome reference combinations that cannot be used for imputation:")
-    print(
-        beds_reference
-        .groupby(['Location Id', 'Dwelling Type', 'Median Rent'])
-        ['Number Of Beds']
-        .nunique()
-        .reset_index(name='Unique_Bed_Count')
-        .query('Unique_Bed_Count > 1')
-        .head(10)
-    )    
-
+    print("\nLookup records for Number Of Beds imputation:", beds_reference.shape)  
+    
     # Calculate the number of unique Number Of Beds values for each
     # Location Id, Dwelling Type, and Median Rent combination.
     # A Unique_Bed_Count of 1 indicates the combination can be used for imputation.
@@ -92,12 +77,22 @@ def clean_bond_dataset():
         .nunique()
         .reset_index(name='Unique_Bed_Count')
     )
-    
+
+    # Valid combinations for imputation.
     print("\nReference combinations for Number Of Beds imputation")
     print((temp_df['Unique_Bed_Count'] == 1).sum())
+    print(
+        temp_df[temp_df['Unique_Bed_Count'] == 1]
+        .head(10)
+    )
 
+    # Ambiguous combinations for imputation.
     print("Ambiguous reference combinations:")
     print((temp_df['Unique_Bed_Count'] > 1).sum())    
+    print(
+        temp_df[temp_df['Unique_Bed_Count'] > 1]
+        .head(10)
+    )
 
     # Identify unique combinations with missing Number Of Beds that have a valid Location Id 
     # for imputation.
@@ -149,9 +144,6 @@ def clean_bond_dataset():
     print("Number Of Beds missing values after imputation:", after_impute)
     print("Number Of Beds values imputed:", before_impute - after_impute)     
 
-    # Sanity check: Specify the number of imputed records to review.
-    rows_to_check = 10
-    
     # Identify records where Number Of Beds was updated during imputation.
     updated_records = filtered_data[
         filtered_data['Org_Number_Of_Beds'].fillna('NULL')
@@ -162,11 +154,61 @@ def clean_bond_dataset():
             'Org_Number_Of_Beds', 'Number Of Beds']
         ]
 
-    print("Sanity check: Records where Number Of Beds was updated during imputation:")
+    # Sanity check: Specify the number of imputed records to review.
+    # Review 10% of imputed records for validation.
+    rows_to_check = int(updated_records.shape[0] * 0.10)
+    
+    
+    print("\nSanity check: Records updated during Number Of Beds imputation:")
     if rows_to_check > 0:
         print(updated_records.head(rows_to_check).to_string(index=False))
     else:
         print(updated_records.to_string(index=False))
+
+    #print("\nValidation check: Verify imputed values against lookup records:")
+    print("\nSanity check: Compare imputed values with lookup records:")
+    # Count validation failures.
+    validation_errors = 0
+
+    # Verify that imputed values match the lookup reference.
+    for _, row in updated_records.head(rows_to_check).iterrows():
+
+        match = beds_reference[
+            (beds_reference['Location Id'] == row['Location Id']) &
+            (beds_reference['Dwelling Type'] == row['Dwelling Type']) &
+            (beds_reference['Median Rent'] == row['Median Rent'])
+        ]
+
+        # Validate records with a unique lookup match.
+        if len(match) == 1:
+
+            expected_beds = match.iloc[0]['Number Of Beds']
+            actual_beds = row['Number Of Beds']
+
+            # Compare the imputed value with the lookup value.
+            if expected_beds == actual_beds:
+                print(
+                    f"PASS | Location Id={row['Location Id']} | "
+                    f"Expected={expected_beds} | Actual={actual_beds}"
+                )
+            else:
+                validation_errors += 1
+                print(
+                    f"FAIL | Location Id={row['Location Id']} | "
+                    f"Expected={expected_beds} | Actual={actual_beds}"
+                )
+
+    print("\nNumber Of Beds imputation errors found in sanity check:", validation_errors)
+
+    validation_accuracy = (
+        (rows_to_check - validation_errors)
+        / rows_to_check
+    ) * 100
+
+    print(
+        f"Sanity check accuracy for the reviewed 10% of imputed records: "
+        f"{validation_accuracy:.2f}%"
+    )
 
     # Check for invalid values and Outliers Detection
     numeric_columns = [

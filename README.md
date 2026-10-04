@@ -255,6 +255,12 @@ The original values were temporarily preserved in `Org_Number_Of_Beds` so that
 the imputed records could be validated. This temporary column was removed after
 the validation was completed.
 
+#### Sanity check
+A review was performed on 10% of the imputed records by comparing the imputed Number Of Beds value against the corresponding lookup record used during imputation.
+
+- Number Of Beds imputation errors found in sanity check: **0**
+- Sanity check accuracy for the reviewed 10% of imputed records: **100.00%**
+
 ### Invalid values
 
 No negative values were found in the bond-count or rental-price variables.
