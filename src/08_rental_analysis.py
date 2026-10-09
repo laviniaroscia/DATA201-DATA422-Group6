@@ -10,7 +10,9 @@ output_rental_price_gap_by_area_img = "out/images/rental_price_gap_by_area.png"
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from join_datasets import join_listings_and_bonds
+from importlib import import_module
+
+join_listings_and_bonds = import_module("06_join_datasets").join_listings_and_bonds
 
 def calculate_rental_price_gaps(df):
     ''' Calculate rental price gaps '''
