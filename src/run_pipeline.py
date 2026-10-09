@@ -1,13 +1,15 @@
 """ Run the complete data wrangling and analysis pipeline. """
 
-from data_filtering import filter_airbnb_data
-from clean_filtered_dataset_chch import clean_airbnb_data
-from rental_bond_data_cleaning import clean_bond_dataset
-from get_area_codes import add_area_codes
-from airbnb_analysis import run_airbnb_analysis
-from rental_analysis import run_rental_analysis
-from compare_location import run_location_comparison
-from median_price import run_median_price_analysis
+from importlib import import_module
+
+filter_airbnb_data = import_module("01_data_filtering").filter_airbnb_data
+clean_airbnb_data = import_module("02_clean_filtered_dataset_chch").clean_airbnb_data
+clean_bond_dataset = import_module("03_rental_bond_data_cleaning").clean_bond_dataset
+run_airbnb_analysis = import_module("04_airbnb_analysis").run_airbnb_analysis
+add_area_codes = import_module("05_get_area_codes").add_area_codes
+run_rental_analysis = import_module("08_rental_analysis").run_rental_analysis
+run_location_comparison = import_module("09_compare_location").run_location_comparison
+run_median_price_analysis = import_module("07_median_price").run_median_price_analysis
 
 
 def run_pipeline():
