@@ -305,15 +305,15 @@ out/
     images/
 
 src/
-    data_filtering.py
-    clean_filtered_dataset_chch.py
-    rental_bond_data_cleaning.py
-    get_area_codes.py
-    join_datasets.py
-    airbnb_analysis.py
-    rental_analysis.py
-    compare_location.py
-    median_price.py
+    01_data_filtering.py
+    02_clean_filtered_dataset_chch.py
+    03_rental_bond_data_cleaning.py
+    04_airbnb_analysis.py
+    05_get_area_codes.py
+    06_join_datasets.py
+    07_median_price.py
+    08_rental_analysis.py
+    09_compare_location.py
     run_pipeline.py
 ```
 
@@ -321,15 +321,15 @@ src/
 
 | Script | Purpose |
 |---|---|
-| `data_filtering.py` | Detects, filters, and combines the monthly Airbnb datasets |
-| `clean_filtered_dataset_chch.py` | Cleans and validates the Christchurch Airbnb data |
-| `rental_bond_data_cleaning.py` | Cleans and validates the Rental Bond dataset |
-| `get_area_codes.py` | Matches Airbnb coordinates to SA2 locations and manages the coordinate lookup cache |
-| `join_datasets.py` | Joins Airbnb and Rental Bond data by geographic area and observation period |
-| `airbnb_analysis.py` | Performs Airbnb price and review analyses |
-| `rental_analysis.py` | Compares short-term Airbnb prices with long-term rental prices |
-| `compare_location.py` | Compares the number of Airbnb and long-term rental properties by area |
-| `median_price.py` | Calculates the median Airbnb price in Christchurch Central |
+| `01_data_filtering.py` | Detects, filters, and combines the monthly Airbnb datasets |
+| `02_clean_filtered_dataset_chch.py` | Cleans and validates the Christchurch Airbnb data |
+| `03_rental_bond_data_cleaning.py` | Cleans and validates the Rental Bond dataset |
+| `04_airbnb_analysis.py` | Performs Airbnb price and review analyses |
+| `05_get_area_codes.py` | Matches Airbnb coordinates to SA2 locations and manages the coordinate lookup cache |
+| `06_join_datasets.py` | Joins Airbnb and Rental Bond data by geographic area and observation period |
+| `07_median_price.py` | Calculates the median Airbnb price in Christchurch Central |
+| `08_rental_analysis.py` | Compares short-term Airbnb prices with long-term rental prices |
+| `09_compare_location.py` | Compares the number of Airbnb and long-term rental properties by area |
 | `run_pipeline.py` | Orchestrates the complete data wrangling and analysis workflow |
 
 ---
@@ -361,7 +361,7 @@ matching, run the analyses, and update the generated outputs and plots in the
 `out` folder.
 
 For a new Airbnb month, its corresponding scrape/publish date must also be
-added to the `scrape_dates` dictionary in `data_filtering.py`, since this
+added to the `scrape_dates` dictionary in `01_data_filtering.py`, since this
 information is not included in the downloaded Airbnb CSV file.
 
 ---
