@@ -158,7 +158,7 @@ where appropriate because they are less sensitive to extreme prices.
 ## Dataset 2 — Rental Bond Data
 
 **Source:** [Tenancy Services — Rental Bond Data](https://www.tenancy.govt.nz/about-tenancy-services/data-and-statistics/rental-bond-data/)  
-**Original size:** 226,080 rows × 12 columns
+**Original size:** 226,080 rows × 12 columns  
 **Period covered:** January 2020 to April 2026
 
 | Column | Description |
